@@ -1,3 +1,4 @@
+void solve()
     int n = 1e6;
     vi spf(n);
     f(i,0,n){
