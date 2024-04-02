@@ -16,8 +16,8 @@ void dijkstra(int s){
         for(auto p:adj[u]){
             int v = p.ss;
             int w = p.ff;
-            if(!vis[v]&&dis[u]+1<dis[v]){
-                dis[v]=dis[u]+1;
+            if(!vis[v]&&dis[u]+w<dis[v]){
+                dis[v]=dis[u]+w;
                 parent[v]=u;
                 pq.push({dis[v],v});
             }
