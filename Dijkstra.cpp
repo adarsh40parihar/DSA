@@ -2,7 +2,8 @@ int n;
 vector<vector<pii>> adj(n);
 vector<bool> vis(n,0);
 vi dis(n,1e18);
-vi parent(n);
+vi parent(n,-1);
+vi path;
 void dijkstra(int s){
     priority_queue<pii,vector<pii>,greater<pii>> pq;
     dis[s]=0;
@@ -22,5 +23,15 @@ void dijkstra(int s){
             }
         }
     }
-
+}
+void trace(int node){
+    if(parent[node]==-1) return;
+    path.pb(parent[node]);
+    trace(parent[node]);
+}
+int32_t main(){
+    int f;
+    path.pb(f);     //f- final destination
+    trace(f);
+    reverse(all(path));
 }
