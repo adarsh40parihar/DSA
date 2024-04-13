@@ -1,3 +1,5 @@
+// Code for 0 zero base indexing 
+
 vector<bool> vis;
 vector<vector<int> > g, gr;
 stack<int> st;
