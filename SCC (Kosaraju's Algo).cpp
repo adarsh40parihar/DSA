@@ -32,38 +32,37 @@ component.push_back(i);
 
 int main()
 {
-int n, m;
-cin>>n >> m;
-g.resize(n);
-gr.resize(n);
-for(int i=0; i<m; i++)
-{
-   int u,v;
-   cin>>u>>v;
-   u--; // to make u and v on 0-based indexing
-   v--;
-   g[u].push_back(v);
-   gr[v].push_back(u);
+   int n, m;
+   cin>>n >> m;
+   g.resize(n);
+   gr.resize(n);
+   for(int i=0; i<m; i++)
+   {
+      int u,v;
+      cin>>u>>v;
+      u--; // to make u and v on 0-based indexing
+      v--;
+      g[u].push_back(v);
+      gr[v].push_back(u);
 }
-vis.assign(n,false);
-for(int i=0; i<n; i++)
-{
+   vis.assign(n,false);
+   for(int i=0; i<n; i++)
+   {
     if(!vis[i])
     {
        dfs1(i);
     }
 }
-vis.assign(n,false);
-while(!st.empty())
-{
-int t=st.top();
-st.pop();
-if(vis[t])
-     continue;
-component.clear();
-dfs2(t); // Run DFS in reverse graph 
+   vis.assign(n,false);
+   while(!st.empty()){
+      int t=st.top();
+      st.pop();
+      if(vis[t])
+           continue;
+      component.clear();
+      dfs2(t); // Run DFS in reverse graph 
          // in topological order of original graph
-sccs.push_back(component);
+      sccs.push_back(component);
 }
 // You can also further convert graph 
 // to SCC-condensed graph (DAG)
