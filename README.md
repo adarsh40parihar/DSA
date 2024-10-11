@@ -1,4 +1,4 @@
-# This is the Inmportant Stuff
+# This is the Important Stuff
 ```
 #include<bits/stdc++.h>
 using namespace std;
