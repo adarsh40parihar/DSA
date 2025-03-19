@@ -1,4 +1,4 @@
-# This is the Important Stuff
+# Boilerplate
 ```
 #include<bits/stdc++.h>
 using namespace std;
