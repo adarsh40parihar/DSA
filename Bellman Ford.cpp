@@ -16,3 +16,13 @@ for(int i=1; i<=n-1; i++)
         }
      }
 }
+for (auto e : edges)
+{
+     int u = e.first;
+     int v = e.second.first;
+     int w = e.second.second;
+     if (dp[u] + w < dp[v])
+     {
+         cout<<"Negative cycle found".
+     }
+}
