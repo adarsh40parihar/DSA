@@ -4,6 +4,7 @@ using namespace std;
 #define vi vector<int>
 #define f(i, x, y) for (int i = x; i < y; i++)
 
+// 0- based for all 
 const int inf = 1e18;
 struct SegmentTree
 {
@@ -25,9 +26,9 @@ struct SegmentTree
             return;
         }
         int mid = (l + r) / 2;
-        build(idx * 2, l, mid, v);
-        build(idx * 2 + 1, mid + 1, r, v);
-        segTree[idx] = min(segTree[idx * 2], segTree[idx * 2 + 1]);         // 1st change
+        build(idx * 2 + 1, l, mid, v);
+        build(idx * 2 + 2, mid + 1, r, v);
+        segTree[idx] = min(segTree[idx * 2 + 1], segTree[idx * 2 + 2]);         // 1st change
     }
 
     // Point update: set v[pos] = new_val
@@ -41,12 +42,12 @@ struct SegmentTree
         int mid = (l + r) / 2;
         if (pos <= mid)
         {
-            update(idx * 2, l, mid, pos, new_val, v);
+            update(idx * 2 + 1 , l, mid, pos, new_val, v);
         }
         else{
-            update(idx * 2 + 1, mid+1,r, pos, new_val, v);
+            update(idx * 2 + 2, mid+1,r, pos, new_val, v);
         }
-        segTree[idx] = min(segTree[idx * 2], segTree[idx * 2 + 1]);         // 2nd change
+        segTree[idx] = min(segTree[idx * 2 + 1], segTree[idx * 2 + 2]);         // 2nd change
     }
 
     // query for range [x -> y]
@@ -59,12 +60,12 @@ struct SegmentTree
             return segTree[idx]; // total overlap
         }
         int mid = (l + r) / 2;
-        int p1 = query(idx * 2, l, mid, x, y);
-        int p2 = query(idx * 2 + 1, mid+1,r, x, y);
+        int p1 = query(idx * 2 + 1, l, mid, x, y);
+        int p2 = query(idx * 2 + 2, mid+1,r, x, y);
         return min(p1, p2);                                                 // 4th change
     }
 };
-// tree is 1 based and other are 0 based indexing
+// tree is 0 based and other are 0 based indexing
 void adarsh_parihar(){
     int n,q;
     cin>>n>>q;
@@ -84,7 +85,7 @@ void adarsh_parihar(){
             int pos, val;
             cin >> pos >> val;
             pos--;
-            st.update(1, 0, n - 1, pos, val, v);
+            st.update(0, 0, n - 1, pos, val, v);
         }
         else
         {
@@ -92,7 +93,7 @@ void adarsh_parihar(){
             cin >> x >> y;
             x--;
             y--;
-            cout << st.query(1, 0, n - 1, x, y) << endl;
+            cout << st.query(0, 0, n - 1, x, y) << endl;
         }
     }
 }
