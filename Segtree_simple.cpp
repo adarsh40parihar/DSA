@@ -75,7 +75,7 @@ void adarsh_parihar(){
     {
         cin>>v[i];
     }
-    st.build(1, 0, n - 1, v);
+    st.build(0, 0, n - 1, v);
     while (q--)
     {
         int x;
