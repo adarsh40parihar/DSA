@@ -1,6 +1,5 @@
 int n;
 vector<vector<pii>> adj(n);
-vector<bool> vis(n,0);
 vi dis(n,1e18);
 vi parent(n,-1);
 vi path;
@@ -9,14 +8,16 @@ void dijkstra(int s){
     dis[s]=0;
     pq.push({dis[s],s});
     while(!pq.empty()){
-        int u = pq.top().second;
+        auto [d, u] = pq.top();
         pq.pop();
-        if(vis[u]) continue;
-        vis[u]=1;
+
+        // outdated state
+        if(d > dis[u]) continue;
+        
         for(auto p:adj[u]){
             int v = p.ss;
             int w = p.ff;
-            if(!vis[v]&&dis[u]+w<dis[v]){
+            if(dis[u]+w<dis[v]){
                 dis[v]=dis[u]+w;
                 parent[v]=u;
                 pq.push({dis[v],v});
