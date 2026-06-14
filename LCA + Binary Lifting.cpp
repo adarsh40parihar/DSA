@@ -41,98 +41,130 @@ return s;
 
 
 
-// LCA
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 200005;      // Maximum number of nodes
-const int LOG = 20;        // log2(N)
+int n;
+int Log;
 
-vector<int> tree[N];
-int up[N][LOG];            // up[v][j] = 2^j-th ancestor of v
-int depth[N];
+vector<vector<int>> adj;
+vector<vector<int>> par;
+vector<int> depth;
 
 /*
-    DFS to:
-    1. Calculate depth of each node
-    2. Fill binary lifting table
+par[node][j]
+= 2^j th ancestor of node
+
+Example:
+par[node][0] -> parent
+par[node][1] -> grandparent (2^1)
+par[node][2] -> 4th ancestor (2^2)
+...
 */
-void dfs(int node, int parent) {
-    up[node][0] = parent;
 
-    // Fill ancestors at powers of 2
-    for (int j = 1; j < LOG; j++) {
-        up[node][j] = up[up[node][j - 1]][j - 1];
+void dfs(int u, int p)
+{
+    par[u][0] = p;
+    // Precompute all 2^j ancestors
+    for(int j = 1; j < Log; j++)
+    {
+        if(par[u][j - 1] != -1)
+            par[u][j] = par[par[u][j - 1]][j - 1];
+        else
+            par[u][j] = -1;
     }
-
-    for (int child : tree[node]) {
-        if (child == parent) continue;
-
-        depth[child] = depth[node] + 1;
-        dfs(child, node);
+    for(auto v : adj[u])
+    {
+        if(v == p) continue;
+        depth[v] = depth[u] + 1;
+        dfs(v, u);
     }
 }
 
-/*
-    Returns Lowest Common Ancestor of u and v
-*/
-int lca(int u, int v) {
+int find_kth(int s, int k)
+{
+    for(int j = Log - 1; j >= 0; j--)
+    {
+        if(s == -1) break;
+        if(k & (1 << j))
+            s = par[s][j];
+    }
+    return s;
+}
 
-    // Ensure u is deeper
-    if (depth[u] < depth[v])
+/*
+Lowest Common Ancestor
+
+Steps:
+1. Bring deeper node to same depth.
+2. If equal => answer found.
+3. Lift both simultaneously.
+4. Parent of either node is LCA.
+*/
+int find_lca(int u, int v)
+{
+    // Make u the deeper node
+    if(depth[u] < depth[v])
         swap(u, v);
 
-    // Lift u to same depth as v
+    // Bring u to same depth as v
     int diff = depth[u] - depth[v];
+    u = find_kth(u, diff);
 
-    for (int j = LOG - 1; j >= 0; j--) {
-        if (diff & (1 << j))
-            u = up[u][j];
-    }
-
-    // If both become same node
-    if (u == v)
-        return u;
-
-    // Lift both together until parents differ
-    for (int j = LOG - 1; j >= 0; j--) {
-        if (up[u][j] != up[v][j]) {
-            u = up[u][j];
-            v = up[v][j];
+    // One node is ancestor of other
+    if(u == v) return u;
+  
+    // Lift both nodes together
+    for(int j = Log - 1; j >= 0; j--)
+    {
+        if(par[u][j] != par[v][j])
+        {
+            u = par[u][j];
+            v = par[v][j];
         }
     }
-
-    // Parent of either is the LCA
-    return up[u][0];
+    // Parent is the LCA
+    return par[u][0];
 }
 
-int main() {
-    int n;
-    cin >> n;
 
-    // Input n-1 edges
-    for (int i = 0; i < n - 1; i++) {
+int main()
+{
+    cin >> n;
+    adj.resize(n + 1);
+    // Input n-1 edges its a tree
+    for(int i = 0; i < n - 1; i++)
+    {
         int u, v;
         cin >> u >> v;
-
-        tree[u].push_back(v);
-        tree[v].push_back(u);
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
 
-    int root = 1;
+    Log = log2(n) + 1;
 
-    depth[root] = 0;
-    dfs(root, root);
+    par.assign(n + 1, vector<int>(Log, -1));
+    depth.assign(n + 1, 0);
+
+    // Root tree at node 1
+    dfs(1, -1);
 
     int q;
     cin >> q;
 
-    while (q--) {
+    while(q--)
+    {
         int u, v;
         cin >> u >> v;
-
-        cout << lca(u, v) << "\n";
+        cout << "LCA = " << find_lca(u, v) << "\n";
     }
-
     return 0;
 }
+
+/*
+Complexities:
+Preprocessing: O(N log N)
+find_kth(): O(log N)
+find_lca(): O(log N)
+*/
+
